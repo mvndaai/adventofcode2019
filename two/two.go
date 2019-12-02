@@ -12,6 +12,11 @@ import (
 // https://adventofcode.com/2019/day/2
 
 func intCode(list []int) []int {
+	copy := make([]int, len(list))
+	for i, v := range list {
+		copy[i] = v
+	}
+	list = copy
 
 	pos := 0
 	for pos < len(list) {
@@ -71,13 +76,27 @@ func main() {
 		log.Fatal(err)
 	}
 
-	list[1] = 12
-	list[2] = 2
-	fmt.Println(list)
+	// list[1] = 12
+	// list[2] = 2
+	// fmt.Println(list)
 
-	ic := intCode(list)
-	fmt.Println(ic)
+	mem := list[0]
+	wantedOutput := 19690720
 
-	fmt.Println(ic[0])
+	for noun := 0; noun <= 99; noun++ {
+		for verb := 0; verb <= 99; verb++ {
+			list[0] = mem
+			list[1] = noun
+			list[2] = verb
+
+			ic := intCode(list)
+			if ic[0] == wantedOutput {
+				fmt.Printf("%02d%02d\n", noun, verb)
+				return
+			}
+		}
+	}
+
+	fmt.Println("did not find an answer")
 
 }
