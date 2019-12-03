@@ -11,14 +11,15 @@ import (
 )
 
 type point struct {
-	x int
-	y int
+	x     int
+	y     int
+	steps int
 }
 
 func findPath(path []string) []point {
 	var final []point
 
-	current := point{x: 0, y: 0}
+	current := point{x: 0, y: 0, steps: 0}
 
 	for _, p := range path {
 		direction := p[0]
@@ -31,21 +32,25 @@ func findPath(path []string) []point {
 		case "U":
 			for j := 0; j < i; j++ {
 				current.y++
+				current.steps++
 				final = append(final, current)
 			}
 		case "D":
 			for j := 0; j < i; j++ {
 				current.y--
+				current.steps++
 				final = append(final, current)
 			}
 		case "L":
 			for j := 0; j < i; j++ {
 				current.x++
+				current.steps++
 				final = append(final, current)
 			}
 		case "R":
 			for j := 0; j < i; j++ {
 				current.x--
+				current.steps++
 				final = append(final, current)
 			}
 		default:
@@ -57,35 +62,54 @@ func findPath(path []string) []point {
 	return final
 }
 
+type match struct {
+	distance int
+	steps    int
+}
+
 func findManhatten(a, b []point) int {
 	// fmt.Println("a", a)
 	// fmt.Println("b", b)
 
-	var matches []int
+	var matches []match
 	for _, ap := range a {
 		for _, bp := range b {
 			// fmt.Println("x", ap.x, bp.x, ap.x == bp.x, "y", ap.y, bp.y, ap.y == bp.y)
 			if ap.x == bp.x && ap.y == bp.y {
 				// fmt.Println("x", ap.x, bp.x, ap.x == bp.x, "y", ap.y, bp.y, ap.y == bp.y)
 				f := math.Abs(float64(ap.x)) + math.Abs(float64(ap.y))
-				matches = append(matches, int(f))
+				matches = append(matches, match{distance: int(f), steps: ap.steps + bp.steps})
 			}
 		}
 	}
 
-	var smallest int
+	// var smallest int
+
+	// if len(matches) != 0 {
+	// 	smallest = matches[0]
+	// 	for _, m := range matches {
+	// 		if m < smallest {
+	// 			smallest = m
+	// 		}
+	// 		fmt.Println("smallest", smallest)
+	// 	}
+	// }
+
+	// return smallest
+
+	var closest int
 
 	if len(matches) != 0 {
-		smallest = matches[0]
+		closest = matches[0].steps
 		for _, m := range matches {
-			if m < smallest {
-				smallest = m
+			if m.steps < closest {
+				closest = m.steps
 			}
-			fmt.Println("smallest", smallest)
+			fmt.Println("closest", closest)
 		}
 	}
 
-	return smallest
+	return closest
 }
 
 func manhatten(a, b string) int {
