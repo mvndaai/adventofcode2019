@@ -43,6 +43,43 @@ func validNumber(n int) bool {
 	return true
 }
 
+func validNumber2(n int) bool {
+	s := intToSlice(n)
+
+	sideByside := false
+	for i := 0; i < len(s)-1; i++ {
+		if s[i] > s[i+1] {
+			return false
+		}
+
+		if s[i] == s[i+1] {
+			t := true
+			if i-1 >= 0 {
+				if s[i-1] == s[i] {
+					t = false
+				}
+			} else {
+				log.Println("a", i, n)
+			}
+			if i+2 < len(s) {
+				if s[i+2] == s[i] {
+					t = false
+				}
+			}
+
+			if t {
+				sideByside = t
+			}
+		}
+	}
+
+	if !sideByside {
+		return false
+	}
+
+	return true
+}
+
 func main() {
 	input := "137683-596253"
 	i := strings.Split(input, "-")
@@ -58,9 +95,11 @@ func main() {
 
 	count := 0
 	for i := start; i <= end; i++ {
-		if validNumber(i) {
+		if validNumber2(i) {
 			count++
 		}
 	}
 	fmt.Println(count)
+	// Failed with 1065 (too low)
+	// Failed with 1372 (too high)
 }
